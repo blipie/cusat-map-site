@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin=""/>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@1.0.2/dist/leaflet.fullscreen.min.css">
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""></script>
+      
     <style>
         body {
             font-family: sans-serif;
@@ -22,8 +24,8 @@
             padding: 20px 0;
         }
         #map {
-    height: 750px; /* Adjust as needed */
-    width: 75%;
+    height: 700px; /* Adjust as needed */
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -43,51 +45,204 @@
         button:hover {
             background-color: #ddd;
         }
+
+        #marker-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    text-align: center; /* To center the list of buttons */
+  }
+
+  #marker-list li {
+    display: inline-block; /* To display buttons in a row */
+    margin: 5px;
+  }
+
+  #marker-list button {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #007bff; /* Example button color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Add a hover effect */
+  }
+
+  #marker-list button:hover {
+    background-color: #0056b3;
+  }
+
+  .leaflet-control-nearby-dropdown {
+    position: relative; /* For positioning the dropdown content */
+  }
+
+  .leaflet-control-nearby-main {
+    background-color: rgb(9, 185, 9);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 32px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block; /* Make it a block-level element */
+    text-decoration: none;
+  }
+
+  .leaflet-control-nearby-main:hover {
+    background-color: #0056b3;
+  }
+
+  .leaflet-control-nearby-dropdown-content {
+    position: absolute;
+    top: 100%; /* Position below the main button */
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 10; /* Ensure it's above other map elements */
+    display: none; /* Initially hidden */
+    min-width: 120px; /* Adjust width as needed */
+  }
+
+  .leaflet-control-nearby-option {
+    display: block;
+    padding: 8px 8px;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    text-align: end;
+  }
+
+  .leaflet-control-nearby-option:hover {
+    background-color: #f0f0f0;
+  }
+
+        
     </style>
 </head>
 <body>
-    <h1>Campus Map</h1>
+    <h1>Cmap</h1>
     <div id="map">
+        </div>
+    <div id="marker-list">
+
         </div>
     <div class="button-container">
         <button onclick="window.location.href='index.html'">Go Back</button>
     </div>
 
     <script>
-        var map = L.map('map').setView([10.044249352240433, 76.32784673324377], 17);
+        var map = L.map('map').setView([10.044249352240433, 76.32784673324377], 16, { fullscreenControl: true });
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        var cusatLatitude = 10.0443;
-var cusatLongitude = 76.3282;
 
-var cusatMarker = L.marker([cusatLatitude, cusatLongitude]).addTo(map);
-cusatMarker.bindPopup("<b>Cochin University of Science and Technology</b>").openPopup();
-
-var cusatBoundary = [
-[[10.039481886300578, 76.32615281059446], [10.038964194155653, 76.32831747266721], [10.038956270289333, 76.32859643779278],
- [10.04012371918789, 76.32898805296611], [10.040292760807887, 76.33005831541749], [10.039434344408278, 76.33017365676761], [10.03922040027443, 76.3308120577264], 
-[10.040482935799119, 76.33299549829457], [10.041914509704085, 76.3329150256614], [10.043237780897016, 76.33309742550932], 
-[10.043874322194469, 76.3327272603272], [10.04411467571812, 76.33212641236628], [10.044365594040826, 76.33178843538803], [10.0437237714943, 76.32954062156733], 
-[10.043919223914145, 76.32918118573429], [10.044521427925673, 76.3288646676126], [10.045292673698043, 76.32904975088962], 
-[10.045926569441335, 76.33032923338408], [10.045715270833895, 76.33084156356335], [10.045855255853624, 76.33110979878143], 
-[10.048780096372553, 76.3324363601912], [10.049242307515541, 76.33270727824447], [10.050502158292616, 76.33081890209365], 
-[10.046928602446314, 76.32954746482824], [10.046367589173045, 76.32904197038283], [10.046446826282548, 76.32683438896726], 
-[10.047680501989404, 76.32690710698614], [10.047623227479349, 76.3255479958168],
- [10.046600906191102, 76.32548439937324], [10.046389608024214, 76.32521348131814], 
- [10.046400172935435, 76.32457239800442], [10.046054171900707, 76.32394204411622],
-  [10.045966971641946, 76.32319632568061], [10.04448523726289, 76.32337872599135], [10.042213761692793, 76.32329825644945],
-   [10.04173040969188, 76.32434258981704], [10.042969160435916, 76.32557110836433], [10.043095940693235, 76.3257776498512], [10.043164613312484, 76.32613708568431],
-  [10.043085375674096, 76.32661990993819], [10.042086976860702, 76.32721539308841], [10.041759463270807, 76.3268479152834], [10.04065989393095, 76.32635086693296], [10.039479241973268, 76.32615773723035]]
-];
+var cusatBoundary = [[10.04173111199762, 76.32433436944302], [10.042981855727376, 76.32558297757424], [10.04310649450521, 76.32578550291055], [10.043170280069447, 76.3261585371987], [10.043172479576342, 76.32639010109608], [10.043091097076825, 76.3265970936863], [10.042275033046906, 76.32719327852209], [10.042065345419843, 76.32721561526688], [10.04177606033798, 76.32685548446938], [10.04065097794333, 76.32634412247245], [10.039486529358527, 76.32615841373092], [10.03895964197649, 76.32832098814396], [10.038952310190382, 76.32858978096203], [10.039613360843475, 76.32880794625112], [10.04011145242768, 76.32892856778585],
+ [10.040300038664554, 76.33006247010195], [10.039438300437766, 76.3301713799085], [10.039219081008937, 76.3308124610038], [10.040483130227614, 76.33298532044137], [10.041882993020934, 76.33290925078774], [10.042796041715889, 76.33303504528016], [10.0431849033059, 76.33309552682778], [10.043267806880223, 76.33309025855573], [10.043876878128444, 76.33271731126683], [10.044113546033856, 76.33212792922723], [10.044266076183945, 76.33195662885134], [10.044359921484102, 76.33177941918109], [10.043722553900565, 76.3295548441817], [10.043914644674047, 76.32918925554833], [10.044510710412226, 76.32887311935468], [10.045300878189494, 76.32905761683492], [10.04592711455635, 76.33031910767386], [10.04571762486978, 76.33083999174391], [10.045844267358206, 76.33109790226433], [10.04598886865908, 76.33117352179056], [10.046142832757127, 76.33125319126566], [10.047036727523817, 76.33163817635182],
+ [10.047572367564328, 76.33192937731081], [10.048759383902492, 76.33242675586774], [10.048824003681673, 76.33246832898931], [10.04918635876011, 76.33268901559734], [10.049248676959053, 76.332713586686], [10.050360471755624, 76.33099712430032], [10.050507102261491, 76.33081619173907], [10.047720441299106, 76.32989284684061], [10.047223803321131, 76.32966176259623], [10.046805435417554, 76.32950843116225], [10.046362253763405, 76.32903196469374], [10.046435245339893, 76.32682090229582], [10.047667801873132, 76.32690362356317], [10.04762550472853, 76.32554250066045], [10.046604779676784, 76.32549447913755], [10.046385788700022, 76.32521518465529], [10.046399369540666, 76.3245721177301], [10.046055252225983, 76.3239352742055], [10.04597546469735, 76.32333013616017], [10.04589397954149, 76.32319048891907], [10.044500968637252, 76.32337126794562], [10.042202692997193, 76.32329683218171], [10.041731369817455, 76.32433415293434]];
 
 var campusHighlight = L.polygon(cusatBoundary, {
     color: 'green',
     fillColor: '#aaffaa',
     fillOpacity: 0.3
 }).addTo(map);
+
+var locations = [
+    { name: "Software Block", lat: 10.049302245630356, lng: 76.33109806821031 },
+    { name: "SOE Main Gate", lat: 10.0496486990624, lng: 76.33058833426045 },
+    { name: "C-Block", lat: 10.04870705551858, lng: 76.3322438419004 },
+    { name: "Amenity Centre", lat: 10.042549663670165, lng: 76.32852182806515 },
+    { name: "University Library", lat: 10.044197118677339, lng: 76.32503672844496 }
+  ];
+
+  var markers = {}; // Object to store markers
+
+  locations.forEach(function(location) {
+    var marker = L.marker([location.lat, location.lng]);
+    markers[location.name] = marker;
+    // marker.addTo(map); // Initially hide all markers
+  });
+
+  var markerListDiv = document.getElementById('marker-list');
+  var listHTML = '<ul>';
+  locations.forEach(function(location) {
+    listHTML += '<li><button onclick="toggleMarker(\'' + location.name + '\')">' + location.name + '</button></li>';
+  });
+  listHTML += '</ul>';
+  markerListDiv.innerHTML = listHTML;
+
+  function toggleMarker(locationName) {
+    var marker = markers[locationName];
+    if (map.hasLayer(marker)) {
+      map.removeLayer(marker);
+    } else {
+      marker.addTo(map);
+      map.setView(marker.getLatLng(), 17); // Focus on the marker with a zoom level of 16
+    }
+  }
+
+ // Create a custom control for the nearby dropdown
+var nearbyDropdown = L.control({ position: 'topleft' });
+
+nearbyDropdown.onAdd = function (map) {
+  var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-nearby-dropdown');
+
+  // Main button to toggle the dropdown
+  var mainButton = L.DomUtil.create('a', 'leaflet-bar-part leaflet-control-nearby-main', div);
+  mainButton.innerHTML = 'Nearby';
+  mainButton.href = '#';
+  mainButton.title = 'Show nearby options';
+
+  // Dropdown content container
+  var dropdownContent = L.DomUtil.create('div', 'leaflet-control-nearby-dropdown-content', div);
+
+  // Options within the dropdown
+  var washroomOption = L.DomUtil.create('a', 'leaflet-control-nearby-option', dropdownContent);
+  washroomOption.innerHTML = 'Washrooms';
+  washroomOption.href = '#';
+  washroomOption.title = 'Show nearby washrooms (not yet functional)';
+  L.DomEvent.on(washroomOption, 'click', function (ev) {
+    L.DomEvent.stopPropagation(ev);
+    alert('Nearby washroom feature is under development!');
+  }, this);
+
+  var foodSpotOption = L.DomUtil.create('a', 'leaflet-control-nearby-option', dropdownContent);
+  foodSpotOption.innerHTML = 'FoodSpots';
+  foodSpotOption.href = '#';
+  foodSpotOption.title = 'Show nearby food spots (not yet functional)';
+  L.DomEvent.on(foodSpotOption, 'click', function (ev) {
+    L.DomEvent.stopPropagation(ev);
+    alert('Nearby food spots feature is under development!');
+  }, this);
+
+  var hangoutAreaOption = L.DomUtil.create('a', 'leaflet-control-nearby-option', dropdownContent);
+  hangoutAreaOption.innerHTML = 'HangoutAreas';
+  hangoutAreaOption.href = '#';
+  hangoutAreaOption.title = 'Show nearby hangout areas (not yet functional)';
+  L.DomEvent.on(hangoutAreaOption, 'click', function (ev) {
+    L.DomEvent.stopPropagation(ev);
+    alert('Nearby hangout areas feature is under development!');
+  }, this);
+
+  // Initially hide the dropdown content
+  dropdownContent.style.display = 'none';
+
+  // Toggle dropdown on main button click
+  L.DomEvent.on(mainButton, 'click', function (ev) {
+    L.DomEvent.stopPropagation(ev);
+    dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+  }, this);
+
+  return div;
+};
+
+nearbyDropdown.addTo(map);
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@1.0.2/dist/leaflet.fullscreen.min.js"></script>
 </body>
 </html>
